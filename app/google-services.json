@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "551679335589",
+    "firebase_url": "https://sawachats-fa75a.firebaseio.com",
+    "project_id": "sawachats-fa75a",
+    "storage_bucket": "sawachats-fa75a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551679335589:android:837b84425a331523",
+        "android_client_info": {
+          "package_name": "sawachats.apps.alirabie.com.sawachats"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "551679335589-4j06guaek9ccci7qiman5lm4op0vtln9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "sawachats.apps.alirabie.com.sawachats",
+            "certificate_hash": "988cb539e9de7fb119aa00c10b5e54308a5beca6"
+          }
+        },
+        {
+          "client_id": "551679335589-vrvs8713b6d381gin9dsggpv073icbhj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgdPNBPXRechFxNqPMT47C8C6k3pBuRlY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "551679335589-vrvs8713b6d381gin9dsggpv073icbhj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

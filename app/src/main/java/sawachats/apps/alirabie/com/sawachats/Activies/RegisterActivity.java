@@ -69,7 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         final String displayName = displayNameInput.getEditText().getText().toString();
         String email=emailInput.getEditText().getText().toString();
-        String password=passwordInput.getEditText().toString();
+        String password=passwordInput.getEditText().getText().toString();
 
         if(TextUtils.isEmpty(displayName)){
             displayNameInput.getEditText().setError("*");

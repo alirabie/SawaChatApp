@@ -18,6 +18,10 @@ import java.sql.ResultSet;
 public class FireBaseDataBaseHelper {
 
     public static  final String USERS = "users";
+    public static  final String FRIND_REQUESTES = "frind_requestes";
+    public static  final String FRIENDS = "friendes";
+
+
 
     public static void storeNewUser (String uid,Object data){
         FirebaseDatabase.getInstance().getReference().child(USERS).child(uid).setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -34,5 +38,18 @@ public class FireBaseDataBaseHelper {
         return   FirebaseDatabase.getInstance().getReference().child(USERS).child(uid);
     }
 
+
+    public static DatabaseReference getAllUsers (){
+        return   FirebaseDatabase.getInstance().getReference().child(USERS);
+    }
+
+
+    public static DatabaseReference sendFrindRequest(){
+        return   FirebaseDatabase.getInstance().getReference().child(FRIND_REQUESTES);
+    }
+
+    public static DatabaseReference addtoFrindes(){
+        return   FirebaseDatabase.getInstance().getReference().child(FRIENDS);
+    }
 
 }

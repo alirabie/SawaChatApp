@@ -8,15 +8,21 @@
 
     <include
         android:id="@+id/hometoolbar"
-        layout="@layout/base_app_bar_layout">
+        layout="@layout/base_app_bar_layout"></include>
 
-    </include>
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="Main Screen"
-        android:textSize="25sp" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/hometoolbar"
+        android:background="@color/colorPrimary"
+        app:tabTextColor="@android:color/background_light"></android.support.design.widget.TabLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/tabs"></android.support.v4.view.ViewPager>
 </RelativeLayout>

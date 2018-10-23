@@ -18,10 +18,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -52,14 +55,29 @@ public class AccountActivity extends AppCompatActivity {
         mImagesStorage= FirebaseStorage.getInstance().getReference();
         FireBaseDataBaseHelper.getUserById(FireBaseAuthHelper.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(final DataSnapshot dataSnapshot) {
                 name.setText(dataSnapshot.child("name").getValue().toString());
                 status.setText(dataSnapshot.child("status").getValue().toString());
                 Picasso.get()
                         .load(dataSnapshot.child("image").getValue().toString())
+                        .networkPolicy(NetworkPolicy.OFFLINE)
                         .resize(50, 50)
                         .placeholder(R.mipmap.default_user)
-                        .into(profilePic);
+                        .into(profilePic, new Callback() {
+                            @Override
+                            public void onSuccess() {
+
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                Picasso.get()
+                                        .load(dataSnapshot.child("image").getValue().toString())
+                                        .resize(50, 50)
+                                        .placeholder(R.mipmap.default_user)
+                                        .into(profilePic);
+                            }
+                        });
             }
 
             @Override
@@ -67,6 +85,7 @@ public class AccountActivity extends AppCompatActivity {
 
             }
         });
+        FireBaseDataBaseHelper.getUserById(FireBaseAuthHelper.getUid()).keepSynced(true);
 
 
 
@@ -110,7 +129,24 @@ public class AccountActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        FireBaseDataBaseHelper
+                .getUserById(FireBaseAuthHelper.getUid()).child("online")
+                .setValue(true);
+    }
 
+
+
+    //    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        FireBaseDataBaseHelper
+//                .getUserById(FireBaseAuthHelper.getUid()).child("online")
+//                .setValue(false);
+//    }
+//
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

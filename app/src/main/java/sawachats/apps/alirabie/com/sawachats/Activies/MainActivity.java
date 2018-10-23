@@ -2,19 +2,30 @@ package sawachats.apps.alirabie.com.sawachats.Activies;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.gms.tasks.OnSuccessListener;
 
+import sawachats.apps.alirabie.com.sawachats.Adapters.CustomPagerAdapter;
 import sawachats.apps.alirabie.com.sawachats.FireBaseUtils.FireBaseAuthHelper;
+import sawachats.apps.alirabie.com.sawachats.FireBaseUtils.FireBaseDataBaseHelper;
+import sawachats.apps.alirabie.com.sawachats.Fragments.ChatsFragment;
+import sawachats.apps.alirabie.com.sawachats.Fragments.FrindesFragment;
+import sawachats.apps.alirabie.com.sawachats.Fragments.RequestesFragment;
 import sawachats.apps.alirabie.com.sawachats.R;
 
 public class MainActivity extends AppCompatActivity {
-    private FirebaseAuth mAuth;
+
     private Toolbar mToolbar;
+    private ViewPager mViewPager;
+    private TabLayout mTabs;
+    CustomPagerAdapter mPagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         mToolbar=findViewById(R.id.hometoolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("SAWA CHAT");
-        mAuth = FirebaseAuth.getInstance();
+        setUpTabsUI();
 
     }
 
@@ -35,11 +46,24 @@ public class MainActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         if(FireBaseAuthHelper.activeSession()==null){
          sendToStartPage();
+        }else {
+
+            FireBaseDataBaseHelper
+                    .getUserById(FireBaseAuthHelper.getUid()).child("online")
+                    .setValue(true);
         }
     }
 
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(FireBaseAuthHelper.activeSession()!=null) {
+            FireBaseDataBaseHelper
+                    .getUserById(FireBaseAuthHelper.getUid()).child("online")
+                    .setValue(false);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -57,18 +81,24 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
-            FireBaseAuthHelper.logOut();
-            sendToStartPage();
+            FireBaseDataBaseHelper
+                    .getUserById(FireBaseAuthHelper.getUid()).child("online")
+                    .setValue(false).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    FireBaseAuthHelper.logOut();
+                    sendToStartPage();
+                }
+            });
+
             return true;
         }else if(id == R.id.action_allusers){
-
-
+            startActivity(new Intent(MainActivity.this,AllUsersActivity.class));
             return true;
         }else if(id==R.id.action_account_settings){
             startActivity(new Intent(MainActivity.this,AccountActivity.class));
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -77,5 +107,18 @@ public class MainActivity extends AppCompatActivity {
     private void sendToStartPage() {
         startActivity(new Intent(MainActivity.this,StartUpActivity.class));
         finish();
+    }
+
+
+
+    public void setUpTabsUI(){
+        mViewPager=findViewById(R.id.pager);
+        mTabs=findViewById(R.id.tabs);
+        mPagerAdapter=new CustomPagerAdapter(getSupportFragmentManager());
+        mPagerAdapter.addFragment(new RequestesFragment(),"Requests");
+        mPagerAdapter.addFragment(new ChatsFragment(),"Chats");
+        mPagerAdapter.addFragment(new FrindesFragment(),"Friends");
+        mViewPager.setAdapter(mPagerAdapter);
+        mTabs.setupWithViewPager(mViewPager);
     }
 }

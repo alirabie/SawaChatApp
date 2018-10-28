@@ -37,7 +37,20 @@
         <activity
             android:name=".Activies.AllUsersActivity"
             android:parentActivityName=".Activies.MainActivity" />
-        <activity android:name=".Activies.ProfileActivity"></activity>
+        <activity android:name=".Activies.ProfileActivity">
+            <intent-filter>
+                <action android:name="com.ali.sawa.chat_TARGET_NOTIFICATIONS"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
+        </activity>
+
+        <service android:name=".FirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+
     </application>
 
 </manifest>

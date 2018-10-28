@@ -37,6 +37,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView displayName;
     private TextView statusTv;
     private Button sendFrindReqBtn;
+    private Button declineBtn ;
     private String currentStatus;
 
 
@@ -45,7 +46,10 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         currentStatus="notFriends";
+
         setupUI();
+        declineBtn.setVisibility(View.INVISIBLE);
+        declineBtn.setEnabled(false);
 
 
 
@@ -75,9 +79,13 @@ public class ProfileActivity extends AppCompatActivity {
                             if(reqType.equals("received")){
                                 currentStatus="req_received";
                                 sendFrindReqBtn.setText("ACCEPT FRIEND REQUEST");
+                                declineBtn.setVisibility(View.VISIBLE);
+                                declineBtn.setEnabled(true);
                             }else if (reqType.equals("sent")){
                                 currentStatus = "req_sent";
                                 sendFrindReqBtn.setText("CANCEL FRIEND REQUEST");
+                                declineBtn.setVisibility(View.INVISIBLE);
+                                declineBtn.setEnabled(false);
                             }
                         }else {
 
@@ -87,6 +95,9 @@ public class ProfileActivity extends AppCompatActivity {
                                     if(dataSnapshot.hasChild(getIntent().getStringExtra("userId"))){
                                         currentStatus="friends";
                                         sendFrindReqBtn.setText("UNFRIEND");
+
+                                        declineBtn.setVisibility(View.INVISIBLE);
+                                        declineBtn.setEnabled(false);
                                     }
                                 }
 
@@ -131,13 +142,28 @@ public class ProfileActivity extends AppCompatActivity {
                                 .child(getIntent().getStringExtra("userId"))
                                 .child(FireBaseAuthHelper.getUid())
                                 .child("request_type")
-                                .setValue("received").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                .setValue("received").addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                currentStatus = "req_sent";
-                                sendFrindReqBtn.setText("CANCEL FRIEND REQUEST");
+                            public void onSuccess(Void aVoid) {
+                                //Send Notifications Part
+                                HashMap<String,String> notificationsData =new HashMap<>();
+                                notificationsData.put("from",FireBaseAuthHelper.getUid());
+                                notificationsData.put("type","request");
+
+                                FireBaseDataBaseHelper.notifications()
+                                        .child(getIntent().getStringExtra("userId")).push().setValue(notificationsData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        currentStatus = "req_sent";
+                                        sendFrindReqBtn.setText("CANCEL FRIEND REQUEST");
+                                        declineBtn.setVisibility(View.INVISIBLE);
+                                        declineBtn.setEnabled(false);
+                                    }
+                                });
+
                             }
                         });
+
                     } else {
                         Toast.makeText(ProfileActivity.this, "Failed to send friend request" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -161,6 +187,8 @@ public class ProfileActivity extends AppCompatActivity {
                                     sendFrindReqBtn.setEnabled(true);
                                     currentStatus="notFriends";
                                     sendFrindReqBtn.setText("SEND FRIEND REQUEST");
+                                    declineBtn.setVisibility(View.INVISIBLE);
+                                    declineBtn.setEnabled(false);
                                 }
                             });
                         }
@@ -197,6 +225,8 @@ public class ProfileActivity extends AppCompatActivity {
                                 sendFrindReqBtn.setEnabled(true);
                                 currentStatus="friends";
                                 sendFrindReqBtn.setText("UNFRIEND");
+                                declineBtn.setVisibility(View.INVISIBLE);
+                                declineBtn.setEnabled(false);
 
                             }else {
                                 Toast.makeText(ProfileActivity.this,databaseError.getMessage(),Toast.LENGTH_SHORT).show();
@@ -216,31 +246,13 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
-//                    FireBaseDataBaseHelper.addtoFrindes().child(FireBaseAuthHelper.getUid()).child(getIntent().getStringExtra("userId")).setValue(date).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                        @Override
-//                        public void onSuccess(Void aVoid) {
-//
-//                            FireBaseDataBaseHelper.addtoFrindes().child(getIntent().getStringExtra("userId")).child(FireBaseAuthHelper.getUid()).setValue(date).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                @Override
-//                                public void onSuccess(Void aVoid) {
-//                                    FireBaseDataBaseHelper.sendFrindRequest().child(FireBaseAuthHelper.getUid()).child(getIntent().getStringExtra("userId")).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                        @Override
-//                                        public void onSuccess(Void aVoid) {
-//                                            FireBaseDataBaseHelper.sendFrindRequest().child(getIntent().getStringExtra("userId")).child(FireBaseAuthHelper.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                @Override
-//                                                public void onSuccess(Void aVoid) {
-//                                                    sendFrindReqBtn.setEnabled(true);
-//                                                    currentStatus="friends";
-//                                                    sendFrindReqBtn.setText("UNFRIEND");
-//                                                }
-//                                            });
-//                                        }
-//                                    });
-//                                }
-//                            });
-//                        }
-//                    });
+
+
+
                 }
+
+
+
 
 
                 //----------------------------------------------------------------------------
@@ -253,8 +265,7 @@ public class ProfileActivity extends AppCompatActivity {
                             FireBaseDataBaseHelper.addtoFrindes().child(getIntent().getStringExtra("userId")).child(FireBaseAuthHelper.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    currentStatus="notFriends";
-                                    sendFrindReqBtn.setText("SEND FRIEND REQUEST");
+
                                 }
                             });
                         }
@@ -278,11 +289,36 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
+
+
+
+
+
             }
         });
 
 
 
+
+        declineBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FireBaseDataBaseHelper.sendFrindRequest().child(FireBaseAuthHelper.getUid()).child(getIntent().getStringExtra("userId")).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        FireBaseDataBaseHelper.sendFrindRequest().child(getIntent().getStringExtra("userId")).child(FireBaseAuthHelper.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                currentStatus="notFriends";
+                                sendFrindReqBtn.setText("SEND FRIEND REQUEST");
+                                declineBtn.setVisibility(View.INVISIBLE);
+                                declineBtn.setEnabled(false);
+                            }
+                        });
+                    }
+                });
+            }
+        });
 
     }
 
@@ -307,5 +343,6 @@ public class ProfileActivity extends AppCompatActivity {
         displayName=findViewById(R.id.display_name);
         statusTv=findViewById(R.id.status_tv);
         sendFrindReqBtn=findViewById(R.id.send_req_btn);
+        declineBtn=findViewById(R.id.declin_req_btn);
     }
 }

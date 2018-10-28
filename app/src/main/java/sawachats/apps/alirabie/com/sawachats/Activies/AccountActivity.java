@@ -138,15 +138,6 @@ public class AccountActivity extends AppCompatActivity {
     }
 
 
-
-    //    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        FireBaseDataBaseHelper
-//                .getUserById(FireBaseAuthHelper.getUid()).child("online")
-//                .setValue(false);
-//    }
-//
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

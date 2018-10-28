@@ -20,6 +20,7 @@ public class FireBaseDataBaseHelper {
     public static  final String USERS = "users";
     public static  final String FRIND_REQUESTES = "frind_requestes";
     public static  final String FRIENDS = "friendes";
+    public static  final String NOTIFICATIONS = "notifications";
 
 
 
@@ -50,6 +51,11 @@ public class FireBaseDataBaseHelper {
 
     public static DatabaseReference addtoFrindes(){
         return   FirebaseDatabase.getInstance().getReference().child(FRIENDS);
+    }
+
+
+    public static DatabaseReference notifications(){
+        return   FirebaseDatabase.getInstance().getReference().child(NOTIFICATIONS);
     }
 
 }

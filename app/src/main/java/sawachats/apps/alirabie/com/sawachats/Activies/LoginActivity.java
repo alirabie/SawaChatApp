@@ -13,10 +13,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import sawachats.apps.alirabie.com.sawachats.FireBaseUtils.FireBaseAuthHelper;
+import sawachats.apps.alirabie.com.sawachats.FireBaseUtils.FireBaseDataBaseHelper;
 import sawachats.apps.alirabie.com.sawachats.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -74,8 +77,16 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
-                        startActivity(new Intent(LoginActivity.this,MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                        LoginActivity.this.finish();
+
+                        String deviceToken = FirebaseInstanceId.getInstance().getToken();
+                        FireBaseDataBaseHelper.getAllUsers().child(FireBaseAuthHelper.getUid()).child("device_token").setValue(deviceToken).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                startActivity(new Intent(LoginActivity.this,MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                                LoginActivity.this.finish();
+                            }
+                        });
+
                     }else {
                         Toast.makeText(LoginActivity.this,task.getException().getMessage(),Toast.LENGTH_SHORT).show();
                     }

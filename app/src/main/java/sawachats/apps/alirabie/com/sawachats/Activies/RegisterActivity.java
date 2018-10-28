@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -86,11 +87,13 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
+                        String deviceToken = FirebaseInstanceId.getInstance().getToken();
                         Map<String,String> userMap =new HashMap<>();
                         userMap.put("name",displayName);
                         userMap.put("status","Hi iam using Sawa Chat");
                         userMap.put("image","default");
                         userMap.put("Active","false");
+                        userMap.put("device_token",deviceToken);
                         userMap.put("lastSeen","notSet");
                         userMap.put("thump_image","default");
                         FireBaseDataBaseHelper.storeNewUser(FireBaseAuthHelper.getUid(),userMap);

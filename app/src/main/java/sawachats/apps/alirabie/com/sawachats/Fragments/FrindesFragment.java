@@ -1,6 +1,8 @@
 package sawachats.apps.alirabie.com.sawachats.Fragments;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,6 +25,7 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import sawachats.apps.alirabie.com.sawachats.Activies.AllUsersActivity;
+import sawachats.apps.alirabie.com.sawachats.Activies.ChatActivity;
 import sawachats.apps.alirabie.com.sawachats.Activies.ProfileActivity;
 import sawachats.apps.alirabie.com.sawachats.FireBaseUtils.FireBaseAuthHelper;
 import sawachats.apps.alirabie.com.sawachats.FireBaseUtils.FireBaseDataBaseHelper;
@@ -97,6 +100,33 @@ public class FrindesFragment extends Fragment {
                 holder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
+                        CharSequence options[] =new CharSequence[]{"Open Profile","Send Message"};
+                        AlertDialog.Builder mBulider=new AlertDialog.Builder(getContext());
+                        mBulider.setTitle("Select Options");
+                        mBulider.setItems(options, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                if(i==0){
+
+                                    startActivity(new Intent(getContext(),ProfileActivity.class)
+                                            .putExtra("userId",getRef(position).getKey()));
+
+
+                                }
+
+                                if(i==1){
+
+                                    startActivity(new Intent(getContext(),ChatActivity.class)
+                                            .putExtra("userId",getRef(position).getKey()));
+
+
+                                }
+
+                            }
+                        });
+                        mBulider.show();
 
                     }
                 });

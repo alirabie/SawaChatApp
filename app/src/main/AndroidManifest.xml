@@ -6,13 +6,13 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".SawaChat"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:name=".SawaChat">
+        android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".Activies.MainActivity"
             android:label="@string/app_name"
@@ -39,8 +39,9 @@
             android:parentActivityName=".Activies.MainActivity" />
         <activity android:name=".Activies.ProfileActivity">
             <intent-filter>
-                <action android:name="com.ali.sawa.chat_TARGET_NOTIFICATIONS"></action>
-                <category android:name="android.intent.category.DEFAULT"></category>
+                <action android:name="com.ali.sawa.chat_TARGET_NOTIFICATIONS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -50,7 +51,9 @@
             </intent-filter>
         </service>
 
-
+        <activity android:name=".Activies.ChatActivity"
+            android:theme="@style/Theme.Design.Light.NoActionBar"
+            android:parentActivityName=".Activies.MainActivity"></activity>
     </application>
 
 </manifest>

@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.ServerValue;
 
 import sawachats.apps.alirabie.com.sawachats.Adapters.CustomPagerAdapter;
 import sawachats.apps.alirabie.com.sawachats.FireBaseUtils.FireBaseAuthHelper;
@@ -61,7 +62,9 @@ public class MainActivity extends AppCompatActivity {
         if(FireBaseAuthHelper.activeSession()!=null) {
             FireBaseDataBaseHelper
                     .getUserById(FireBaseAuthHelper.getUid()).child("online")
-                    .setValue(false);
+                    .setValue(ServerValue.TIMESTAMP);
+
+
         }
     }
 
